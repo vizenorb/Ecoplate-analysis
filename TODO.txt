@@ -1,0 +1,26 @@
+[X] Set up version control
+[X] Figure out data storage method
+[~] Re-learn everything you forgot (so, everything)
+[~] Part 1: Importing and data storage
+    [~] Write
+        [X] Ecoplate_analysis.py
+        [~] Plate.py (class)
+            [ ] Create carbon source array
+            [X] Everything else
+    [ ] Debug
+    [ ] Integrate into main program
+[~] Part 2: Data analysis
+    [~] Figure out what I am actually supposed to do (what is AWCD used for?)
+    [ ] Write
+    [ ] Debug
+    [ ] Integrate into main program
+[ ] Part 3: Exporting data
+    [ ] Learn how to write to CSV files
+    [ ] Have an existential crisis because all logic in the world is gone
+    [ ] Write
+    [ ] Debug
+    [ ] Cry one more time
+    [ ] Integrate into main program
+
+
+Current plan is to leave all debugging until Part 2 is done, so I can actually use the data to see if it stored correctly.
