@@ -1,14 +1,14 @@
 '''
-plate class
+Plate class for ecoplate analysis software
 '''
 
-'''
-Description:    
-Preconditions:  
-Postconditions: 
-'''
-#Plate class inherits from the abstract class 'Sequence'
+__author__ = "Brady Vizenor"
+__date__ = "10-10-17"
+
 from collections.abc import Sequence
+
+#Plate class inherits from the abstract class 'Sequence'
+#See Python 3 documentation for more info on abstract classes
 class Plate(Sequence):
     _sourceMatrix = []
 
@@ -57,10 +57,20 @@ class Plate(Sequence):
         return returnStr.format(sourceFormatList)
 
 
-    def __getitem__(self, key):
+    def __getitem__(self, key):        
+        '''
+        Description:    Allows the class to be call an index of self._dataMatrix
+        Preconditions:  key is an int with an index present in the plate instance
+        Postconditions: returns what is present at "key" index in self._dataMatrix
+        '''
         return self._dataMatrix[key]
 
     def __iter__(self):
+        '''
+        Description:    Allows the class to be iterated over self._dataMatrix
+        Preconditions:  none
+        Postconditions: returns an iter object which iterates over self._dataMatrix
+        '''
         return(iter(self._dataMatrix))
 
     def __str__(self):
