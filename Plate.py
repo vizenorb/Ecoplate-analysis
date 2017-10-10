@@ -10,11 +10,18 @@ from collections.abc import Sequence
 #Plate class inherits from the abstract class 'Sequence'
 #See Python 3 documentation for more info on abstract classes
 class Plate(Sequence):
-    _sourceMatrix = []
+    _sourceMatrix = [[],
+                     [],
+                     [],
+                     [],
+                     [],
+                     [],
+                     [],
+                     []]
 
     def __init__(self, rawdata):
         '''
-        Description:    
+        Description:    Initializes an instance of the plate class
         Preconditions:  "rawdata" is a string containing an ecoplate scan output
         Postconditions: None
         '''
