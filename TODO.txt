@@ -26,9 +26,10 @@
     [ ] Write export
     [ ] Initial debug
             [ ] Error 1
+            [ ] Scream for good measure.
             [ ] Error 2, etc.
-    [ ] Cry one more time
-    [ ] Integrate into main program
+    [ ] Cry one more time for good measure
+    [ ] Test with large number of files running at once
 [ ] Part 4: Documentation
     [ ] Confirm sufficient documentation in-code.
             [ ] Plate.py
