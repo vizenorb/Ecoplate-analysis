@@ -24,7 +24,9 @@ SECTION 1: Important information
 '''
 SECTION 2: Defining functions
 '''
-def calcAWCD():
+def calcAWCD(currentPlate):
+    
+    
     
 
 
