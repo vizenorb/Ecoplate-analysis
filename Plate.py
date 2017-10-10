@@ -10,14 +10,14 @@ from collections.abc import Sequence
 #Plate class inherits from the abstract class 'Sequence'
 #See Python 3 documentation for more info on abstract classes
 class Plate(Sequence):
-    _sourceMatrix = [[],
-                     [],
-                     [],
-                     [],
-                     [],
-                     [],
-                     [],
-                     []]
+    _sourceMatrix = [[""],
+                     [""],
+                     [""],
+                     [""],
+                     [""],
+                     [""],
+                     [""],
+                     [""]]
 
     def __init__(self, rawdata):
         '''
@@ -48,18 +48,18 @@ class Plate(Sequence):
         rowList = [x+1 for x in range(len(sourceMatrix[0]))]
         colList.insert(0,"\t")
         #Create a string that has a number of formatted values
-        for row in self._sourceMatrix:
-            #x is incremented to create a series of sequential numbers independent of the loop
+        for row in _sourceMatrix:
+            #x is incremented to create a series of sequential numbers, is incremented independent of the standard incrementation in the for loop
             for i in range(x,x+len(row)):
                 returnStr += "$"+str(i)+".30s"
                 x += 1
             returnStr +="\n"
-        #removes all spaces and inserts a tab so everyhing looks clean
+        #removes all spaces and inserts a tab so everything looks clean
         returnStr.replace(" ","\t")
         #Create a list that will contain the values we will assign to each format variable
         sourceFormatList = []
-        for row in sourceMatrix:
-            for entry in sourceMatrix:
+        for row in _sourceMatrix:
+            for entry in row:
                 sourceFormatList += entry       
         return returnStr.format(sourceFormatList)
 
@@ -96,8 +96,8 @@ class Plate(Sequence):
             returnStr +="\n"
         #Create a list that will contain the values we will assign to each format variable
         sourceFormatList = []
-        for row in dataMatrix:
-            for entry in dataMatrix:
+        for row in self._dataMatrix:
+            for entry in row:
                 sourceFormatList += entry       
         return returnStr.format(sourceFormatList)
 

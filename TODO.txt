@@ -1,26 +1,39 @@
 [X] Set up version control
 [X] Figure out data storage method
-[~] Re-learn everything you forgot (so, everything)
+[~] Re-learn everything that was forgotten (so, everything)
 [~] Part 1: Importing and data storage
     [~] Write
-        [X] Ecoplate_analysis.py
+        [~] Ecoplate_analysis.py
+                # Need to talk w/ Dr. Anderson about file naming standardization before I count this part as completely done.
         [~] Plate.py (class)
             [ ] Create carbon source array
-            [X] Everything else
-    [ ] Debug
-    [ ] Integrate into main program
+            [ ] carbon source print (needs to be tested)
+            [X] __init__
+            [X] output functions
+            [X] sequence functions
+    [ ] Initial debug
+            [ ] Error 1
+            [ ] Error 2, etc.
 [~] Part 2: Data analysis
-    [~] Figure out what I am actually supposed to do (what is AWCD used for?)
-    [ ] Write
-    [ ] Debug
-    [ ] Integrate into main program
+    [~] Actually figure out what the point of AWCD is.
+    [ ] calcAWCD function
+    [ ] Initial debug
+            [ ] Error 1
+            [ ] Error 2, etc.
 [ ] Part 3: Exporting data
     [ ] Learn how to write to CSV files
-    [ ] Have an existential crisis because all logic in the world is gone
-    [ ] Write
-    [ ] Debug
-    [ ] Cry one more time
-    [ ] Integrate into main program
-
-
-Current plan is to leave all debugging until Part 2 is done, so I can actually use the data to see if it stored correctly.
+    [ ] Have an existential crisis because all logic in the world is gone because I hate CSV files
+    [ ] Write export
+    [ ] Initial debug
+            [ ] Error 1
+            [ ] Scream for good measure.
+            [ ] Error 2, etc.
+    [ ] Cry one more time for good measure
+    [ ] Test with large number of files running at once
+[ ] Part 4: Documentation
+    [ ] Confirm sufficient documentation in-code.
+            [ ] Plate.py
+            [ ] Ecoplate_analysis.py
+    [ ] Create documentation with PyDoc.
+            [ ] Actually learn how to use PyDoc.
+            [ ] Use PyDoc.

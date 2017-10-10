@@ -1,6 +1,5 @@
 '''
 Description:    Ecoplate analysis software to calculate AWCD for ecoplate scans.
-                Created by Brady Vizenor for use by Dr. Sara Anderson, Minnesota State University Moorhead.
 '''
 import csv
 import os
@@ -10,8 +9,10 @@ from datetime import *
 
 __author__ = "Brady Vizenor"
 __date__ = "10/4/2017"
+# Ask Dr. Anderson if we can change the way the outputs are named to be consistent
 # variablename = open(filename,"r")
 #  'date'_'plateID'.txt      ex: 20180106_P001701.txt
+# I see in the master file that the current plate IDs aren't all P#####, it could just be any combination of six letters/numbers.
 
 '''
 SECTION 1: Important information
@@ -24,15 +25,27 @@ SECTION 1: Important information
 '''
 SECTION 2: Defining functions
 '''
+=======
 def calcAWCD(currentPlate):
-    
-    
+    '''
+    Description:    
+    Preconditions:  
+    Postconditions: 
+    '''
+>>>>>>> 4bbc8111872e2415a865a7fbe0aa94eedc5522f1
     
 
 
 
 '''
 SECTION 3:  Initializing variables and importing data.
+        >> This is currently being written as if I can get a standardized plate name. Otherwise, I can do a check based upon if a certain format is detected, namely:
+            529
+            1   2   3   4   5   6   7   ...
+                etc.
+            This code is already written in Plate.py, I just need to port it over and change the detection mechanism to that. Again, I would ideally like a standardized plate name
+        >> Maybe edit the way I detect/store a date by using the audit information that *should* be at the end of every file. 
+           I could have sworn that I saw ones that were missing it, though.
 '''
 #Initialize the dictionary that will hold each plate's information.
 plateDict = {}
