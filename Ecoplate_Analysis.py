@@ -25,14 +25,14 @@ SECTION 1: Important information
 '''
 SECTION 2: Defining functions
 '''
-=======
+
 def calcAWCD(currentPlate):
     '''
     Description:    
     Preconditions:  
     Postconditions: 
     '''
->>>>>>> 4bbc8111872e2415a865a7fbe0aa94eedc5522f1
+
     
 
 
