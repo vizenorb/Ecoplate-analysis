@@ -28,11 +28,12 @@ SECTION 2: Defining functions
 
 def calcAWCD(currentPlate):
     '''
-    Description:    
+    Description: Calculates the 
     Preconditions:  
     Postconditions: 
     '''
-
+    absorbanceList = [sample-currentPlate[0][0] for sample in currentPlate]
+    return sum(absorbanceList)
     
 
 

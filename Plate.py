@@ -10,14 +10,7 @@ from collections.abc import Sequence
 #Plate class inherits from the abstract class 'Sequence'
 #See Python 3 documentation for more info on abstract classes
 class Plate(Sequence):
-    _sourceMatrix = [[""],
-                     [""],
-                     [""],
-                     [""],
-                     [""],
-                     [""],
-                     [""],
-                     [""]]
+    _sourceMatrix = [[[],[]],[[],[]],[[],[]]]
 
     def __init__(self, rawdata):
         '''
@@ -36,6 +29,12 @@ class Plate(Sequence):
             self._dataMatrix.append([self._dataList[i].split('\t')])
             if self._dataMatrix[i][-1] == "529":     #just to be safe
                 del self._dataMatrix[i][-1]
+        #each sample is an 8x4 array
+        sample1 = []
+        sample2 = []
+        sample3 = []
+        sampleList = [sample1,sample2,sample3]
+
 
     def getSources():
         '''
