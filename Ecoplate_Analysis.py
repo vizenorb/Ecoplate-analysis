@@ -63,7 +63,12 @@ for filename in fileList:
 # Each item in the list will be a 2-item list with the format [date,PlateObject].
 for filename in fileList:
     newDate = date(filename[0:3],filename[4:5],filename[6:7])
-    plateDict[filename[9:15]].append([newDate,Plate(open(filename,"r"))]
+    newPlate = Plate(open(filename,"r"))
+    # Divide up the plate into three samples with format [[row1],[row2],[row3], ... ]
+    newSample1 = [row[0:3] for row in newPlate]
+    newSample2 = [row[4:7] for row in newPlate]
+    newSample3 = [row[8:11] for row in newPlate]
+    plateDict[filename[9:15]].append([newDate,newPlate,(newSample1, calcAWCD(newSample1)),(newSample2, calcAWCD(newSample2)),(newSample3, calcAWCD(newSample3))]
 
 '''
 SECTION 4: Analyzing data.
