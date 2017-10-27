@@ -26,7 +26,9 @@ SECTION 1: Important information
 SECTION 2: Defining functions
 '''
 
-def calcAWCD(currentPlate):
+def splitPlate(currentPlate):
+
+def calcAWCD(currentSample):
     '''
     Description: Calculates the 
     Preconditions:  
@@ -78,3 +80,10 @@ SECTION 4: Analyzing data.
 '''
 SECTION 5: Exporting results.
 '''
+
+# go through the weird manual file
+# sample ID
+
+# make a new dictionary for samples after all files have been read
+# wants sample ID C1 C2 C3 C4 -- normalized
+# just use the day that it works for

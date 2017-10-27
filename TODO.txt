@@ -4,13 +4,14 @@
 [~] Part 1: Importing and data storage
     [~] Write
         [~] Ecoplate_analysis.py
-                # Need to talk w/ Dr. Anderson about file naming standardization before I count this part as completely done.
+            [ ] Rewrite the entire input area.
         [~] Plate.py (class)
             [ ] Create carbon source array
             [ ] carbon source print (needs to be tested)
             [X] __init__
             [X] output functions
             [X] sequence functions
+            [ ] just move the plate class to the main program
     [ ] Initial debug
             [ ] Error 1
             [ ] Error 2, etc.

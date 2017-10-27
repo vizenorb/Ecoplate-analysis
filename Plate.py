@@ -109,3 +109,13 @@ class Plate(Sequence):
         return sum(len(l) for l in dataMatrix)
 
     
+class Sample(Plate):
+    def __init__(self,aPlate):
+        sample1 = []
+        sample2 = []
+        sample3 = []
+        for row in aPlate:
+            #sorts the 
+            sample1.append([:4])
+            sample2.append([5:8])
+            sample3.append([9:])
