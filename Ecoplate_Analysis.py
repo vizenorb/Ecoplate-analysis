@@ -14,9 +14,9 @@ HI REMEMBER TO REMOVE ME AND REPLACE WITH A PROJECT-SPECIFIC KEY THAT SARA CAN M
 '''
 # gspread authorization 
 scope = ['https://spreadsheets.google.com/feeds']
-auth_path = ~/Documents/research/ecoplate_analysis/'gspread api-a3dd38e5d3e8.json'
+auth_path = '/home/brady/Documents/research/ecoplate_analysis/gspread_api-a3dd38e5d3e8.json'
 credentials = ServiceAccountCredentials.from_json_keyfile_name(auth_path, scope)
-gc = gspread.authorize()
+gc = gspread.authorize(credentials)
 '''
 END IMPORTANT THING
 '''
@@ -41,7 +41,7 @@ def calcAWCD(currentSample):
     for row in currentSample:
         retList.append([int(i)-2 for i in row])
     return sum(retList)
-    
+
 '''
 SECTION 2:  Importing data.
 '''
@@ -52,42 +52,49 @@ os.chdir(sys.argv[1])
 # Imports each text file in the current working directory that matches the naming scheme "YYYYMMDD_somechars (P1037)" or similar, where YYYYMMDD is the date,
 # and the plate ID is anything else as long as it contains a unique number of any length
 # Also does not open copies of files, so it works in the old crowded directories it will probably be used in.
-fileList = [x for x in os.listdir() if ".txt" in x and x[0:7].isdigit() and "copy" not in x.lower]
+fileList = [x for x in os.listdir() if ".txt" in x and x[0:7].isdigit() and "copy" not in x.lower()]
 # Open the master file spreadsheet
-master_file = gc.open("1BazLeWBEKBvHJB98Mf_lg6yj8eHuFe6UVOvUT0QYa78".sheet2)
+master_file = gc.open("Ecoplates master file")
+master_wks = master_file.get_worksheet(1)
 
 
 for fileName in fileList:
     #creates a date object using the date in the filename, with format:  date(YYYY,MM,DD)
-    newdate = date(fileName[0:3],fileName[4:5],fileName[6:7])
+    newdate = date(int(fileName[0:4]),int(fileName[4:6]),int(fileName[6:8]))
     #grabs the plate ID defined as any digit in the second half of the file name
     plateID = ''.join([n for n in fileName.split()[1] if n.isdigit()])
-
     
     #opens the file in read mode
-    rawdata = open(file,"r"")
-    dataMatrix = []
+    rd = open(fileName,"r")
+    lineMatrix = []
     # Splits the file into a list of lines
-    rawdataList = rawdata.split("\n")
+    rawdataList = rd.read().split("\n")
+
     # Searches for the line that reads "590", which indicates the beginning of the useful data, then isolates the data we want to look at using that index
-    dataList = rawdataList[rawdataList[rawdataList.index("590")+1:rawdataList.index("590")+9]
+    dataList = rawdataList[rawdataList.index("590")+1:rawdataList.index("590")+9]
     # Splits each line in that isolated data block into a list of data entries
     for i in range(len(dataList)):
-        dataMatrix.append([dataList[i].split('\t')])
+        lineMatrix.append(dataList[i].split('\t'))
         # Removes the "590" that appears to be at the end of every line
-        if dataMatrix[i][-1] == "590":
-            del dataMatrix[i][-1]
+
+    del(lineMatrix[-1])
+    del(lineMatrix[0])
+    dataMatrix = []
+    for row in lineMatrix:
+        dataMatrix.append([i for i in row if not i.isalpha()])
+    print(dataMatrix)
     # At this point each item in our new data matrix is still typed as a string, change them to ints to make it easier to calculate AWCD
     for r in range(len(dataMatrix)):
         for c in range(len(dataMatrix[r])):
-            dataMatrix[r][c] = int(dataMatrix[r][c])
+            dataMatrix[r][c] = float(dataMatrix[r][c])
 
     # Creates a regular expression 
-    plate_re = re.compile("^[A-Za-z]+"+plateID)
+    plate_re = re.compile("*"+plateID)
+    # > ignore me for now:      ^[A-Za-z]+
     # Finds the numerical
-    cellrow = master_file.find(plate_re).row
+    cellrow = master_wks.find(plate_re).row
 
-    sampleIDList = [master_file.cell(cellrow,2),master_file.cell(cellrow,3),master_file.cell(cellrow,4)]
+    sampleIDList = [master_wks.cell(cellrow,2),master_wks.cell(cellrow,3),master_wks.cell(cellrow,4)]
 
     # at this point we have a list of sampleIDs named sampleIDList
     sampleMatrix1 = []
@@ -118,7 +125,7 @@ SECTION 3: Analyzing data.
 goodData = []
 for sampleID in sampleDict.keys():
     #sorts entries in each sample by date
-    sampleDict[sampleID].sort(key=lambda item: item[0]))
+    sampleDict[sampleID].sort(key=lambda item: item[0])
     #goes through in order of newly sorted entries
     for entry in sampleDict[sampleID]:
         if calcAWCD(entry[1]) <= 0.6 and calcAWCD(entry[1]) >= 0.4:

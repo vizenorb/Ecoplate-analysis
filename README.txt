@@ -1,2 +1,1 @@
-See TODO.txt for project status.
-See ERRORS.txt for debugging task list.
+I'll put instructions here using markdown once its working.

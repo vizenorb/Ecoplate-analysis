@@ -1,2 +1,0 @@
-Current Errors:
-(none, won't start debugging until calcAWCD is done)
