@@ -4,14 +4,15 @@ Description:    Ecoplate analysis software to calculate AWCD for ecoplate scans.
 import csv
 import os
 import sys
+import re
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from datetime import *
+from datetime import date, timedelta  #maybe fix this when I'm not lazy
 
 '''
 HI REMEMBER TO REMOVE ME AND REPLACE WITH A PROJECT-SPECIFIC KEY THAT SARA MAKES
 '''
-# gspread authorization
+# gspread authorization 
 scope = ['https://spreadsheets.google.com/feeds']
 auth_path = ~/Documents/research/ecoplate_analysis/'gspread api-a3dd38e5d3e8.json'
 credentials = ServiceAccountCredentials.from_json_keyfile_name(auth_path, scope)
@@ -22,15 +23,12 @@ END IMPORTANT THING
 
 
 __author__ = "Brady Vizenor"
-__date__ = "10/4/2017"
+__date__ = "10/28/2017"
 
 '''
-SECTION 1: Important information
-'''
+SECTION 1: Setup
 
-
-'''
-SECTION 2: Defining functions
+use in format 'python3 Ecoplate_Analysis.py /path/to/dir/of/files/to/be/read
 '''
 
 def calcAWCD(currentSample):
@@ -42,17 +40,8 @@ def calcAWCD(currentSample):
     return sum([sum(item) for item in currentSample])/31
     
 
-
-
 '''
-SECTION 3:  Initializing variables and importing data.
-        >> This is currently being written as if I can get a standardized plate name. Otherwise, I can do a check based upon if a certain format is detected, namely:
-            529
-            1   2   3   4   5   6   7   ...
-                etc.
-            This code is already written in Plate.py, I just need to port it over and change the detection mechanism to that. Again, I would ideally like a standardized plate name
-        >> Maybe edit the way I detect/store a date by using the audit information that *should* be at the end of every file. 
-           I could have sworn that I saw ones that were missing it, though.
+SECTION 2:  Importing data.
 '''
 #Initialize the dictionary that will hold each sample's information.
 sampleDict = {}
@@ -62,13 +51,16 @@ os.chdir(sys.argv[1])
 # and the plate ID is anything else as long as it contains a unique number of any length
 # Also does not open copies of files, so it works in the old crowded directories it will probably be used in.
 fileList = [x for x in os.listdir() if ".txt" in x and x[0:7].isdigit() and "copy" not in x.lower]
+# Open the master file spreadsheet
+master_file = gc.open("1BazLeWBEKBvHJB98Mf_lg6yj8eHuFe6UVOvUT0QYa78".sheet2)
 
 
 for fileName in fileList:
     #creates a date object using the date in the filename, with format:  date(YYYY,MM,DD)
     newdate = date(fileName[0:3],fileName[4:5],fileName[6:7])
     #grabs the plate ID defined as any digit in the second half of the file name
-    plateNum = ''.join([n for n in fileName.split()[1] if n.isdigit()])
+    plateID = ''.join([n for n in fileName.split()[1] if n.isdigit()])
+
     
     #opens the file in read mode
     rawdata = open(file,"r"")
@@ -88,7 +80,12 @@ for fileName in fileList:
         for c in range(len(dataMatrix[r])):
             dataMatrix[r][c] = int(dataMatrix[r][c])
 
-    # parse ecoplate master file and make a three-item list, where each item is a sample name
+    # Creates a regular expression 
+    plate_re = re.compile(#???+plateID)
+    cellrow = master_file.find(plate_re)[0]
+
+    sampleIDList = [master_file.cell(cellrow,2),master_file.cell(cellrow,3),master_file.cell(cellrow,4)]
+
     # at this point we have a list of sampleIDs named sampleIDList
     sampleMatrix1 = []
     sampleMatrix2 = []
@@ -111,29 +108,28 @@ for fileName in fileList:
     sampleDict[sampleIDList[2]].append([newdate, sampleMatrix3, calcAWCD(sampleMatrix3)])
 
 
-
 '''
-SECTION 4: Analyzing data.
+SECTION 3: Analyzing data.
 '''
 
 goodData = []
 for sampleID in sampleDict.keys():
-    
-    #sampleID.sort(do lambda thing)
+    #sorts entries in each sample by date
     sampleDict[sampleID].sort(key=lambda item: item[0]))
-    for sample in sampleDict[sampleID]:
-        if calcAWCD(sample[1]) <= 0.6 and calcAWCD(sample[1]) >= 0.4:
-            #write to csv file here
-            #OR add to a list and then sort the list by sample ID, write at end <<< do that
-            goodData.append([sampleID]+sample)
-            continue
+    #goes through in order of newly sorted entries
+    for entry in sampleDict[sampleID]:
+        if calcAWCD(entry[1]) <= 0.6 and calcAWCD(entry[1]) >= 0.4:
+            # appends a list to goodData in the format ['sampleID',[sampleMatrix]]
+            goodData.append([sampleID]+entry[1])
+            # breaks to the next sample ID when this happens, so no subsequent scans will be added to our output
+            break
 
 
     
     
 
 '''
-SECTION 5: Exporting results.
+SECTION 4: Exporting results.
 '''
 
 goodData.sort(key=lambda item: item[0])
