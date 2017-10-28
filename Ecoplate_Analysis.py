@@ -10,7 +10,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from datetime import date, timedelta  #maybe fix this when I'm not lazy
 
 '''
-HI REMEMBER TO REMOVE ME AND REPLACE WITH A PROJECT-SPECIFIC KEY THAT SARA MAKES
+HI REMEMBER TO REMOVE ME AND REPLACE WITH A PROJECT-SPECIFIC KEY THAT SARA CAN MAKE
 '''
 # gspread authorization 
 scope = ['https://spreadsheets.google.com/feeds']
@@ -37,9 +37,11 @@ def calcAWCD(currentSample):
     Preconditions: currentSample is a list of lists, where each "sublist" is a row in the sample's entries
     Postconditions: Returns a float containing the AWCD for the sample
     '''
-    return sum([sum(item) for item in currentSample])/31
+    retList = []
+    for row in currentSample:
+        retList.append([int(i)-2 for i in row])
+    return sum(retList)
     
-
 '''
 SECTION 2:  Importing data.
 '''
@@ -81,8 +83,9 @@ for fileName in fileList:
             dataMatrix[r][c] = int(dataMatrix[r][c])
 
     # Creates a regular expression 
-    plate_re = re.compile(#???+plateID)
-    cellrow = master_file.find(plate_re)[0]
+    plate_re = re.compile("^[A-Za-z]+"+plateID)
+    # Finds the numerical
+    cellrow = master_file.find(plate_re).row
 
     sampleIDList = [master_file.cell(cellrow,2),master_file.cell(cellrow,3),master_file.cell(cellrow,4)]
 
@@ -131,8 +134,20 @@ for sampleID in sampleDict.keys():
 '''
 SECTION 4: Exporting results.
 '''
-
+# Sort goodData by sampleID.
 goodData.sort(key=lambda item: item[0])
+# Create new CSV file
+csvfilename = "./{0:4d}{1:2d}{2:2d}_viableAWCD.csv".format(datetime.now().year,datetime.now().month,datetime.now().day)
+with open(csvfilename,'wb') as csvfile:
+    fileWriter = csv.writer(csvfile, delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+    # Creates a header for the file
+    firstLine = ["Sample ID"] + ["C"+str(i) for i in range(1,32)]
+    fileWriter.writerow(firstLine)
+
+    # Starts writing out viable data
+    for sample in goodData:
+        fileWriter.writerow([goodData[0]]+sum(goodData[1],[]))
+
 
 
 
