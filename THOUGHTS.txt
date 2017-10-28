@@ -5,3 +5,4 @@ maybe just remove the entire platedict, we can sort into sampledict right away i
 
 each sample is in format:
 sampleDict[sampleNum] = (adate, [[row1][row2][row3][row4]]
+

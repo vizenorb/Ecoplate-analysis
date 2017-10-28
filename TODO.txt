@@ -1,6 +1,7 @@
 [X] Set up version control
 [X] Figure out data storage method
-[~] Re-learn everything that was forgotten (so, everything)
+[ ] Learn how to use markdown.
+[ ] Rewrite all of these .txt files into .md files.
 [~] Part 1: Importing and data storage
     [~] Write
         [~] Ecoplate_analysis.py
