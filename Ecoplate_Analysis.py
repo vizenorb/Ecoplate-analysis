@@ -5,9 +5,10 @@ import csv
 import os
 import sys
 import re
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 import datetime
+import gspread
+from time import sleep
+from oauth2client.service_account import ServiceAccountCredentials
 
 '''
 HI REMEMBER TO REMOVE ME AND REPLACE WITH A PROJECT-SPECIFIC KEY THAT SARA CAN MAKE
@@ -59,13 +60,15 @@ master_file = gc.open("Ecoplates master file")
 master_wks = master_file.worksheet("Sheet2")
 
 
+print("\n","WARNING! This program takes some time to run.\n")
+sleep(4)
+
 for fileName in fileList:
     #creates a date object using the date in the filename, with format:  datetime.datetime(YYYY,MM,DD)
     #calculate me from file itself instead, more reliable                       newdate = datetime.datetime(int(fileName[0:4]),int(fileName[4:6]),int(fileName[6:8]))
     #grabs the plate ID defined as any digit in the second half of the file name
-    print(fileName)
     plateID = ''.join([n for n in fileName.split()[1] if n.isdigit()])
-    newdate = datetime.datetime(int(fileName[0:4]),int(fileName[4:6]),int(fileName[6:8]))
+                #newdate = datetime.datetime(int(fileName[0:4]),int(fileName[4:6]),int(fileName[6:8]))
     
     #opens the file in read mode
     rd = open(fileName,"r")
@@ -93,6 +96,17 @@ for fileName in fileList:
 
 
     # Next, get a date/time
+    dateList = rawdataList[rawdataList.index("Data Audit Trail"):]
+    for dLine in dateList:
+        if "Plate read successfully completed" in dLine:
+            dateLine = dLine
+    dateVals = dateLine.split()[0].split("/")
+    timeVals = dateLine.split()[1].split(":")
+    if "PM" in dateLine and " 12:" not in dateLine:
+        timeVals[0] += 12
+    if "AM" in dateLine and " 12:" in dateLine:
+        timeVals[0] = 0
+    newdate = datetime.datetime(int(dateVals[2]),int(dateVals[0]),int(dateVals[1]),int(timeVals[0]),int(timeVals[1]),int(timeVals[2]))
     
     # Close the file.
     rd.close()
@@ -109,7 +123,8 @@ for fileName in fileList:
   
 
     sampleIDList = [str(master_wks.cell(cellrow,2).value),str(master_wks.cell(cellrow,3).value),str(master_wks.cell(cellrow,4).value)]
-    print(sampleIDList)
+    print(fileName)
+    print(sampleIDList,"\n")
 
     # at this point we have a list of sampleIDs named sampleIDList
     sampleMatrix1 = []
@@ -161,7 +176,7 @@ SECTION 3: Exporting results.
 # Sort goodData by sampleID.
 goodData = sorted(goodData, key=lambda item: item[0])
 # Create new CSV file and writer object
-csvfilename = "./{0:4d}{1:2d}{2:0=2d}_viableAWCD.csv".format(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day)
+csvfilename = datetime.datetime.now().strftime("./%Y%m%d_%H%M_viableAWCD.csv")
 with open(csvfilename,'w') as csvfile:
     fileWriter = csv.writer(csvfile, delimiter=',')
     # Create and write header to csv file
