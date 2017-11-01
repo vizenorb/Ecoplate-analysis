@@ -64,7 +64,7 @@ master_wks = master_file.worksheet("Sheet2")
 
 
 print("\n","WARNING! This program takes some time to run.\n")
-sleep(4)
+sleep(3)
 
 for fileName in fileList:
     #creates a date object using the date in the filename, with format:  datetime.datetime(YYYY,MM,DD)
@@ -97,6 +97,7 @@ for fileName in fileList:
         for c in range(len(dataMatrix[r])):
             dataMatrix[r][c] = float(dataMatrix[r][c])
 
+    print(fileName)
 
     # Next, get a date/time
     dateList = rawdataList[rawdataList.index("Data Audit Trail"):]
@@ -106,10 +107,11 @@ for fileName in fileList:
     dateVals = dateLine.split()[0].split("/")
     timeVals = dateLine.split()[1].split(":")
     if "PM" in dateLine and " 12:" not in dateLine:
-        timeVals[0] += 12
+        timeVals[0] = int(timeVals[0]) + 12
     if "AM" in dateLine and " 12:" in dateLine:
         timeVals[0] = 0
     newdate = datetime.datetime(int(dateVals[2]),int(dateVals[0]),int(dateVals[1]),int(timeVals[0]),int(timeVals[1]),int(timeVals[2]))
+
     
     # Close the file.
     rd.close()
@@ -126,7 +128,6 @@ for fileName in fileList:
   
 
     sampleIDList = [str(master_wks.cell(cellrow,2).value),str(master_wks.cell(cellrow,3).value),str(master_wks.cell(cellrow,4).value)]
-    print(fileName)
     print(sampleIDList,"\n")
 
     # at this point we have a list of sampleIDs named sampleIDList
