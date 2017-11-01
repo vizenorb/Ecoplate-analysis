@@ -114,7 +114,7 @@ for fileName in fileList:
     except ValueError:
         print("file is missing data audit trail")
         print("continuing with date in file name, but no time")
-        newdate = datetime.datetime(int(fileName[0:4]), int(fileName[4:6], int(fileName[6:8])))
+        newdate = datetime.datetime(int(fileName[0:4]), int(fileName[4:6]), int(fileName[6:8]))
     
     # Close the file.
     rd.close()
