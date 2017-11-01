@@ -190,7 +190,7 @@ with open(csvfilename,'w') as csvfile:
         # Make one long list in the format of [sampleID, C1, C2, C3, ... C31]
         writeList = [sample[0]]
         for ss in sample[1]:
-            writeList.extend(ss)
+            writeList.extend([x-sample[1][0][0] for x in ss])
         # Remove the control from each sample.
         del writeList[1]
         # And write out the final product!
