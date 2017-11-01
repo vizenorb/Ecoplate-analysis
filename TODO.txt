@@ -1,6 +1,6 @@
 [ ] Create a README markdown.
 [ ] Download worksheet instead of calling it each time, might run faster.
-	> Make a dictionary of plateDict[plateID] = [sample
+	> Make a dictionary of plateDict[plateID] = [sampleID,sampleID,sampleID]
 [ ] Move order of stuff so calcAWCD() only runs if the previous plate was not within the desired AWCD range.
     [ ] Possibly check AWCD dynamically, so it doesn't run any samples with a sample ID that has already been added to goodData. Just create a list of completed IDs and check if the sample ID is in there before starting any of the file opening.
 [ ] Modularize every part of the code.
