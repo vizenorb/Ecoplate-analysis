@@ -11,25 +11,28 @@ from time import sleep
 from oauth2client.service_account import ServiceAccountCredentials
 
 '''
-HI REMEMBER TO REMOVE ME AND REPLACE WITH A PROJECT-SPECIFIC KEY THAT SARA CAN MAKE
+HI REMEMBER TO REMOVE ME AND REPLACE WITH SARA'S KEY
 '''
+
 # gspread authorization 
+# needs to be replaced with user-specific key, maybe create a master key
 scope = ['https://spreadsheets.google.com/feeds']
 auth_path = '/home/brady/Documents/research/ecoplate_analysis/gspread_api-a3dd38e5d3e8.json'
 credentials = ServiceAccountCredentials.from_json_keyfile_name(auth_path, scope)
 gc = gspread.authorize(credentials)
+
 '''
 END IMPORTANT THING
 '''
 
 
 __author__ = "Brady Vizenor"
-__date__ = "10/30/2017"
+__date__ = "11/01/2017"
 
 '''
 SECTION 1: Setup
 
-use in format 'python3 Ecoplate_Analysis.py /path/to/dir/of/files/to/be/read [-v] (optional, "verbose")
+use in format 'python3 Ecoplate_Analysis.py /path/to/dir/
 '''
 
 def calcAWCD(currentSample):
@@ -192,16 +195,6 @@ with open(csvfilename,'w') as csvfile:
         del writeList[1]
         # And write out the final product!
         fileWriter.writerow(writeList)
-
-    '''
-    # Starts writing out viable data
-    for sample in goodData:
-        new_row = "{}".format(sample[0])
-        for ss in sample[1]:
-            new_row += ","+",".join(str(val) for val in ss)
-        print(new_row)
-        fileWriter.writerow(new_row)
-    '''
 
     csvfile.close()
 
