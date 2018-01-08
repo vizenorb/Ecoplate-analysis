@@ -1,21 +1,6 @@
-[ ] Create a README markdown.
-[ ] Download worksheet instead of calling it each time, might run faster.
-	> Make a dictionary of plateDict[plateID] = [sampleID,sampleID,sampleID]
-[ ] Move order of stuff so calcAWCD() only runs if the previous plate was not within the desired AWCD range.
-    [ ] Possibly check AWCD dynamically, so it doesn't run any samples with a sample ID that has already been added to goodData. Just create a list of completed IDs and check if the sample ID is in there before starting any of the file opening.
-[ ] Modularize every part of the code.
-    Ex: getSamples(list(rawDataList) or file(filename))
-        writeToCSV(list(goodData)) 
-[ ] Check for other optimization opportunities.
-[ ] Add -v tag.
-[ ] Add sys.argv checks to make sure that the right number of parameters are being passed through, if every tag is valid, etc.
-[ ] Add dynamic text through the use of curses to show how much progress has been made in reading each file.
-    Ex: Reading files... (use FULL BLOCK characters every 5%?)
-        Calculating AWCDs...
-        Writing to (csvfilename here)...
-[ ] Add errors/exceptions to say what is going wrong.
+Create readme markdown.
 
 
+In-program:
+Line 85, 136            Can't remember how plateID was supposed to be set up (ignore letters, or no?)
 
---COMPLETED--
-[X] Go through raw data to get times, change date() object to datetime() object.

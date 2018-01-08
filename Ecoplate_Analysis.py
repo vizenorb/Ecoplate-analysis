@@ -15,8 +15,9 @@ HI REMEMBER TO REMOVE ME AND REPLACE WITH SARA'S KEY
 '''
 
 # gspread authorization 
-# needs to be replaced with user-specific key, maybe create a master key
 scope = ['https://spreadsheets.google.com/feeds']
+# replace this auth_path variable here with the path to your OAuth2 authentication .json file
+# you can create one here:   http://gspread.readthedocs.io/en/latest/oauth2.html
 auth_path = '/home/brady/Documents/research/ecoplate_analysis/gspread_api-a3dd38e5d3e8.json'
 credentials = ServiceAccountCredentials.from_json_keyfile_name(auth_path, scope)
 gc = gspread.authorize(credentials)
@@ -27,17 +28,13 @@ END IMPORTANT THING
 
 
 __author__ = "Brady Vizenor"
-__date__ = "11/01/2017"
+__date__ = "01/08/2018"
 
-'''
-SECTION 1: Setup
 
-use in format 'python3 Ecoplate_Analysis.py /path/to/dir/
-'''
 
 def calcAWCD(currentSample):
     '''
-    Description: Calculates the 
+    Description: Calculates the AWCD of a sample.
     Preconditions: currentSample is a list of lists, where each "sublist" is a row in the sample's entries
     Postconditions: Returns a float containing the AWCD for the sample
     '''
@@ -47,17 +44,34 @@ def calcAWCD(currentSample):
         returnList.extend([ent-control for ent in row])
     return sum(returnList)/31
 
+def getFileList(dirPath, recursionCheck = False):
+    '''
+    Description: Gets a list of pathnames for files in a directory.
+    Preconditions: dirPath is a valid pathname to a directory, recursionCheck is a boolean value indicating if you want \
+    the program to check directories inside of the initial directory.
+    Postconditions: Returns a list of file pathnames.
+    '''
+    fileList = [dirpath+fi for fi in os.listdir(dirPath) if fi[0:8].isdigit and fi.lower().endswith(".txt")]
+    if recursionCheck:
+        subdirList = [dirPath+subdir for subdir in os.listdir(dirPath) if os.path.isdir(dirPath+subdir)]
+        for subdir in subdirList:
+            fileList.extend(getFileList(subdir, True)
+    return fileList
+
+
+
 '''
 SECTION 1:  Importing data.
 '''
-#Initialize the dictionary that will hold each sample's information.
+# Initialize the dictionary that will hold each sample's information.
 sampleDict = {}
-# Navigate to directory provided by the user.
-os.chdir(sys.argv[1])
-# Imports each text file in the current working directory that matches the naming scheme "YYYYMMDD_somechars (P1037)" or similar, where YYYYMMDD is the date,
-# and the plate ID is anything else as long as it contains a unique number of any length
-# Also does not open copies of files, so it works in the old crowded directories it will probably be used in.
-fileList = [x for x in os.listdir() if ".txt" in x and x[0:7].isdigit() and "copy" not in x.lower() and "pm" not in x.lower()]
+# Get list of data files, either recursively or not depending on if recursive tag is supplied
+if "-r" in sys.argv[2:]:
+    fileList = getFileList(sys.argv[1], True)
+else:
+    fileList = getFileList(sys.argv[1])
+
+
 # Open the master file spreadsheet
 master_file = gc.open("Ecoplates master file")
 master_wks = master_file.worksheet("Sheet2")
@@ -67,11 +81,9 @@ print("\n","WARNING! This program takes some time to run.\n")
 sleep(3)
 
 for fileName in fileList:
-    #creates a date object using the date in the filename, with format:  datetime.datetime(YYYY,MM,DD)
-    #calculate me from file itself instead, more reliable                       newdate = datetime.datetime(int(fileName[0:4]),int(fileName[4:6]),int(fileName[6:8]))
     #grabs the plate ID defined as any digit in the second half of the file name
+            #change this so it looks for all values after the space if unique IDs with letters are wanted
     plateID = ''.join([n for n in fileName.split()[1] if n.isdigit()])
-                #newdate = datetime.datetime(int(fileName[0:4]),int(fileName[4:6]),int(fileName[6:8]))
     
     #opens the file in read mode
     rd = open(fileName,"r")
@@ -119,14 +131,14 @@ for fileName in fileList:
 
     # Creates a regular expression
     # Can't really explain how it works, but looks for at least one character that is A-Z or a-z at the beginning of the string.
-    # Might take this out if she decides on unique number IDs or unique letter-number combos.
+                        # Can't remember what ID format was decided on, get back to this.
     plate_re = re.compile("^[A-Za-z]+"+plateID)
 
-    # Finds the numerical
+    # Finds the numerical value for the cell row.
     cellrow = master_wks.find(plate_re).row
     #cellrow = master_wks.find("P"+plateID)
   
-
+    #Creates a list of sample IDs that are present in 
     sampleIDList = [str(master_wks.cell(cellrow,2).value),str(master_wks.cell(cellrow,3).value),str(master_wks.cell(cellrow,4).value)]
     print(sampleIDList,"\n")
 
