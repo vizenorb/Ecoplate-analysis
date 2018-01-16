@@ -51,11 +51,11 @@ def getFileList(dirPath, recursionCheck = False):
     the program to check directories inside of the initial directory.
     Postconditions: Returns a list of file pathnames.
     '''
-    fileList = [dirpath+fi for fi in os.listdir(dirPath) if fi[0:8].isdigit and fi.lower().endswith(".txt")]
+    fileList = [dirPath+fi for fi in os.listdir(dirPath) if fi[0:8].isdigit and fi.lower().endswith(".txt")]
     if recursionCheck:
         subdirList = [dirPath+subdir for subdir in os.listdir(dirPath) if os.path.isdir(dirPath+subdir)]
         for subdir in subdirList:
-            fileList.extend(getFileList(subdir, True)
+            fileList.extend(getFileList(subdir, True))
     return fileList
 
 
@@ -203,7 +203,7 @@ with open(csvfilename,'w') as csvfile:
         # Make one long list in the format of [sampleID, C1, C2, C3, ... C31]
         writeList = [sample[0]]
         for ss in sample[1]:
-            writeList.extend([x-sample[1][0][0] for x in ss)])
+            writeList.extend([x-sample[1][0][0] for x in ss])
         # Remove the control from each sample.
         del writeList[1]
         # And write out the final product!
