@@ -197,9 +197,9 @@ for sampleID in sampleDict.keys():
 '''
 Exporting results.
 '''
-# Sort goodData by sampleID.
+# Sorts goodData by sampleID.
 goodData = sorted(goodData, key=lambda item: item[0])
-# Create a new CSV file and writer object.
+# Creates a new CSV file and writer object.
 csvfilename = datetime.datetime.now().strftime("./%Y%m%d_%H%M_viableAWCD.csv")
 with open(csvfilename, 'w') as csvfile:
     # Creates writer object and header, then writes header.
@@ -208,7 +208,7 @@ with open(csvfilename, 'w') as csvfile:
     fileWriter.writerow(header)
 
     for sample in goodData:
-        # Make one long list in the format of [sampleID, C1, C2, C3 ... C31]
+        # Makes one long list in the format of [sampleID, C1, C2, C3 ... C31].
         writeList = [sample[0]]
         for wcd in sample[1]:
             writeList.extend([x-sample[1][0][0] for x in wcd])
