@@ -1,6 +1,0 @@
-Create readme markdown.
-
-
-In-program:
-Line 85, 136            Can't remember how plateID was supposed to be set up (ignore letters, or no?)
-

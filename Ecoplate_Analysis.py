@@ -65,7 +65,7 @@ SECTION 1:  Importing data.
 '''
 # Initialize the dictionary that will hold each sample's information.
 sampleDict = {}
-# Get list of data files, either recursively or not depending on if recursive tag is supplied
+# Get list of data files, either recursively or not depending on if recursive tag is supplied.
 if "-r" in sys.argv[2:]:
     fileList = getFileList(sys.argv[1], True)
 else:
@@ -81,22 +81,22 @@ print("\n","WARNING! This program takes some time to run.\n")
 sleep(3)
 
 for fileName in fileList:
-    #grabs the plate ID defined as any digit in the second half of the file name
-            #change this so it looks for all values after the space if unique IDs with letters are wanted
+    # Grabs the plate ID, defined as any digit in the second half of the file name.
+            # Future modifications: change this so it looks for all values after the space if unique IDs with letters are wanted.
     plateID = ''.join([n for n in fileName.split()[1] if n.isdigit()])
     
-    #opens the file in read mode
+    # Opens the file in read mode
     rd = open(fileName,"r")
     lineMatrix = []
     # Splits the file into a list of lines
     rawdataList = rd.read().split("\n")
     
-    # Searches for the line that reads "590", which indicates the beginning of the useful data, then isolates the data we want to look at using that index
+    # Searches for the line that reads "590", which indicates the beginning of the useful data, then isolates the data we want to look at using that index.
     dataList = rawdataList[rawdataList.index("590")+1:rawdataList.index("590")+11]
-    # Splits each line in that isolated data block into a list of data entries
+    # Splits each line in that isolated data block into a list of data entries.
     for i in range(len(dataList)):
         lineMatrix.append(dataList[i].split('\t'))
-        # Removes the "590" that appears to be at the end of every line
+        # Removes the "590" that appears to be at the end of every line.
 
     del(lineMatrix[-1])
     del(lineMatrix[0])
@@ -104,14 +104,14 @@ for fileName in fileList:
     for row in lineMatrix:
         dataMatrix.append([i for i in row if not i.isalpha()])
 
-    # At this point each item in our new data matrix is still typed as a string, change them to floats to make it easier to calculate AWCD
+    # At this point each item in our new data matrix is still typed as a string, change them to floats to make it easier to calculate AWCD.
     for r in range(len(dataMatrix)):
         for c in range(len(dataMatrix[r])):
             dataMatrix[r][c] = float(dataMatrix[r][c])
 
     print(fileName)
 
-    # Next, get a date/time
+    # Next, gets a date/time.
     dateList = rawdataList[rawdataList.index("Data Audit Trail"):]
     for dLine in dateList:
         if "Plate read successfully completed" in dLine:
@@ -129,36 +129,35 @@ for fileName in fileList:
     rd.close()
 
 
-    # Creates a regular expression
+    # Creates a regular expression.
     # Can't really explain how it works, but looks for at least one character that is A-Z or a-z at the beginning of the string.
-                        # Can't remember what ID format was decided on, get back to this.
+                        # Future modifications: if letters are wanted in the plateIDs, remove this line and modify line 138.
     plate_re = re.compile("^[A-Za-z]+"+plateID)
 
     # Finds the numerical value for the cell row.
     cellrow = master_wks.find(plate_re).row
-    #cellrow = master_wks.find("P"+plateID)
   
-    #Creates a list of sample IDs that are present in 
+    # Creates a list of sample IDs corresponding to the plate.
     sampleIDList = [str(master_wks.cell(cellrow,2).value),str(master_wks.cell(cellrow,3).value),str(master_wks.cell(cellrow,4).value)]
     print(sampleIDList,"\n")
 
-    # at this point we have a list of sampleIDs named sampleIDList
+    # Create lists that will hold each sample's data.
     sampleMatrix1 = []
     sampleMatrix2 = []
     sampleMatrix3 = []
-    # creates 2D lists containing data for each sample
-    for row in dataMatrix:
-        sampleMatrix1.append(row[0:4])  #0123
-        sampleMatrix2.append(row[4:8])  #4567
-        sampleMatrix3.append(row[8:12]) #8901
+    # Creates 2D lists containing data for each sample.
+    for row in dataMatrix:              # Each sample uses column numbers:
+        sampleMatrix1.append(row[0:4])  # 0123
+        sampleMatrix2.append(row[4:8])  # 4567
+        sampleMatrix3.append(row[8:12]) # 8901
 
-    # add each sampleID to the dictionary if the sampleID is not in the dictionary already
+    # Adds each sampleID to the dictionary if the sampleID not currently present.
     for sampleID in sampleIDList:
         if sampleID not in sampleDict.keys():
             sampleDict[sampleID] = []
 
-    # append each new reading to the sample's dictionary entry with the format
-    # [datetime.datetime(Date of Reading), list(Sample Matrix)]
+    # Appends each new reading to the sample's dictionary entry with the format:
+    # [datetime.datetime(Date of Reading), list(Sample Matrix)].
     sampleDict[sampleIDList[0]].append([newdate, sampleMatrix1])
     sampleDict[sampleIDList[1]].append([newdate, sampleMatrix2])
     sampleDict[sampleIDList[2]].append([newdate, sampleMatrix3])
@@ -171,15 +170,15 @@ SECTION 2: Analyzing data.
 
 goodData = []
 for sampleID in sampleDict.keys():
-    #sorts entries in each sample by date
+    # Sorts entries in each sample by date.
     sampleDict[sampleID] = sorted(sampleDict[sampleID], key=lambda item: item[0])
-    #goes through in order of newly sorted entries
+    # Goes through in order of newly sorted entries.
     for entry in sampleDict[sampleID]:
         awcd = calcAWCD(entry[1])
         if awcd <= 0.6 and awcd >= 0.4 and sampleID != "empty":
-            # appends a list to goodData in the format ['sampleID',[sampleMatrix]]
+            # Appends a list to goodData in the format ['sampleID',[sampleMatrix]].
             goodData.append([sampleID]+[entry[1]])
-            # breaks to the next sample ID when this happens, so no subsequent scans will be added to our output
+            # Breaks to the next sample ID when this happens, so no subsequent scans will be added to our output.
             break
 
 
@@ -191,16 +190,16 @@ SECTION 3: Exporting results.
 '''
 # Sort goodData by sampleID.
 goodData = sorted(goodData, key=lambda item: item[0])
-# Create new CSV file and writer object
+# Create new CSV file and writer object.
 csvfilename = datetime.datetime.now().strftime("./%Y%m%d_%H%M_viableAWCD.csv")
 with open(csvfilename,'w') as csvfile:
     fileWriter = csv.writer(csvfile, delimiter=',')
-    # Create and write header to csv file
+    # Create and write header to csv file.
     header = ["Sample ID"] + ["C"+str(i) for i in range(1,32)]
     fileWriter.writerow(header)
 
     for sample in goodData:
-        # Make one long list in the format of [sampleID, C1, C2, C3, ... C31]
+        # Make one long list in the format of [sampleID, C1, C2, C3, ... C31].
         writeList = [sample[0]]
         for ss in sample[1]:
             writeList.extend([x-sample[1][0][0] for x in ss])
